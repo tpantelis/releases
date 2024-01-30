@@ -1,0 +1,27 @@
+---
+name: GHA Test
+
+on:
+  pull_request:
+
+jobs:
+  gha-test:
+    name: TEST
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the latest tag
+        run: |
+          RELEASE_JSON=$(curl -L \
+             -H "Accept: application/vnd.github+json" \
+             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+             -H "X-GitHub-Api-Version: 2022-11-28" \
+             "${{ github.api_url }}/repos/submariner-io/releases/releases/latest")
+          echo "Latest release JSON: $RELEASE_JSON"
+          echo "LATEST_TAG=$(echo $RELEASE_JSON | jq -r .tag_name)" >> $GITHUB_ENV
+      - name: Print latest
+        run: |
+          echo "Latest release tag: $LATEST_TAG"
+      - name: Use latest
+        if: ${{ 'v0.16.3' == env.LATEST_TAG }}
+        run: |
+          echo "IS LATEST!!!"
