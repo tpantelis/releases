@@ -1,5 +1,5 @@
 ---
-name: Post Release
+name: Test Trigger
 
 on:
   workflow_dispatch:
